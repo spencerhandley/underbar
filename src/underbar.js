@@ -228,39 +228,16 @@ var _ = {};
 
 
   // Determine whether all of the elements match a truth test.
-   _.every = _.all = function(obj, predicate, context) {
-    predicate || (predicate = _.identity);
-    var result = true;
-    if (obj == null) return result;
-    if (nativeEvery && obj.every === nativeEvery) return obj.every(predicate, context);
-    each(obj, function(value, index, list) {
-      if (!(result = result && predicate.call(context, value, index, list))) return breaker;
-    });
-    return !!result;
-  };
-  // _.every = function(collection, iterator) {
-  //    predicate || (predicate = _.identity);
-  //   var result = true
-  //   if(collection == null) {return result}
-  //   each(collection, function(value, index, list) {
-  //     if(!(result = result && predicate.call(context, value, index, list))) return breaker
-  //   })
-  //  return !!result
-    // return _.reduce(collection, )
-    // if(collection.length >= 0) {
-    //   var results = _.reduce(collection, iterator)
-    //   if (results == true) {
-    //     return true
-    //   } if (results == false) {
-    //     return false
-    //   }
-    // }else {
-    //   return true
-    // }
-    
+_.every = function(collection, iterator) {
+    if(collection.length === 0){
+      return true
+    }
 
-    // TIP: Try re-using reduce() here.
-  // };
+    return _.reduce(collection, function(allFound, item) {
+        return !!iterator(item) && allFound;
+    }, true);
+};
+  
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
@@ -270,11 +247,11 @@ var _ = {};
       result = false
     } else if (collection instanceof Array){
       for(var i = 0; i <= collection.length; i++) {
-        if(iterator(collection[i])) {
-          result = true;
-        } else if(collection[i] instanceof String) {
+        if(collection[i] instanceof String) {
           result = true
-        }
+        } else if(iterator(collection[i])) {
+          result = true;
+        } 
       }
     } else {
       result = true  
@@ -303,11 +280,34 @@ var _ = {};
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+    var result = obj
+    for(var i = 1; i < arguments.length ; i++) {
+      var object = arguments[i]
+      for(value in object) {
+        result[value] = object[value]
+      }
+    }
+    return result
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+
+    var result = obj
+    for(var i = 1; i < arguments.length ; i++) {
+      var object = arguments[i]
+      for(value in object) {
+        if(obj.hasOwnProperty(value)){
+          console.log('exists')
+        } else {
+          result[value] = object[value]
+
+        }
+      }
+    }
+    return result
+
   };
 
 
@@ -358,6 +358,8 @@ var _ = {};
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+    var args = arguments.slice(2);
+    return setTimeout(function () { return func.apply(null, args); }, wait);
   };
 
 
@@ -372,6 +374,14 @@ var _ = {};
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    var newarr = array.slice(0)
+     for (var i = newarr.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var temp = newarr[i];
+          newarr[i] = newarr[j];
+          newarr[j] = temp;
+      }
+      return newarr;
   };
 
 
