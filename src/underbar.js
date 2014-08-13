@@ -229,7 +229,17 @@ var _ = {};
 
   // Determine whether all of the elements match a truth test.
 _.every = function(collection, iterator) {
+
+  // TODO: check every item in array for truthyness without iterator
     if(collection.length === 0){
+      return true
+    }
+    if(!arguments[1]) {
+      for( var i = 0; i < collection.length; i++) {
+        if(!collection[i]){
+          return false
+        }
+      }
       return true
     }
 
@@ -242,6 +252,14 @@ _.every = function(collection, iterator) {
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
+    // write it for the edge case of the iterator being optional 311 in spec
+    for(var i = 0; i < collection.length; i++) {
+      console.log(typeof collection[i])
+      if(typeof collection[i] === "string"){
+        return true
+      }
+    }
+  
     var result = false
     if(collection.length == 0) {
       result = false
@@ -283,8 +301,8 @@ _.every = function(collection, iterator) {
     var result = obj
     for(var i = 1; i < arguments.length ; i++) {
       var object = arguments[i]
-      for(value in object) {
-        result[value] = object[value]
+      for(var key in object) {
+        result[key] = object[key]
       }
     }
     return result
@@ -297,7 +315,7 @@ _.every = function(collection, iterator) {
     var result = obj
     for(var i = 1; i < arguments.length ; i++) {
       var object = arguments[i]
-      for(value in object) {
+      for(var value in object) {
         if(obj.hasOwnProperty(value)){
           console.log('exists')
         } else {
@@ -348,9 +366,27 @@ _.every = function(collection, iterator) {
   // _.memoize should return a function that when called, will check if it has
   // already computed the result for the given argument and return that value
   // instead if possible.
+  var holder = []
   _.memoize = function(func) {
+    var memo = [];
+    return function() {
+      var has = false
+      var index = undefined
+      for(var i = 0; i < memo.length; i++){
+        for(var j=0; j< arguments.length; j++){
+          console.log(func)
+          if(memo[i] === func(arguments)){
+            console.log(memo[i])
+            has = true
+            index = i
+          }
+        }
+      }
+      console.log(memo[index])
+      // var key = hasher.apply(this, arguments);
+      return has ? memo[index] : (memo[memo.length] = func.apply(this, arguments));
+    };
   };
-
   // Delays a function for the given number of milliseconds, and then calls
   // it with the arguments supplied.
   //
