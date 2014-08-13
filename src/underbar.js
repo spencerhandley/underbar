@@ -371,20 +371,17 @@ _.every = function(collection, iterator) {
     var memo = [];
     return function() {
       var has = false
-      var index = undefined
+      var index = undefined 
       for(var i = 0; i < memo.length; i++){
         for(var j=0; j< arguments.length; j++){
-          console.log(func)
-          if(memo[i] === func(arguments)){
-            console.log(memo[i])
+          if(memo[i] === arguments[j]){
             has = true
             index = i
           }
         }
       }
-      console.log(memo[index])
       // var key = hasher.apply(this, arguments);
-      return has ? memo[index] : (memo[memo.length] = func.apply(this, arguments));
+      return has ? null : (memo[memo.length] = func.apply(this, arguments));
     };
   };
   // Delays a function for the given number of milliseconds, and then calls
