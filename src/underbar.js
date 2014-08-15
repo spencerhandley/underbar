@@ -366,22 +366,20 @@ _.every = function(collection, iterator) {
   // _.memoize should return a function that when called, will check if it has
   // already computed the result for the given argument and return that value
   // instead if possible.
-  var holder = []
   _.memoize = function(func) {
-    var memo = [];
+    var memo = {};
     return function() {
-      var has = false
-      var index = undefined 
-      for(var i = 0; i < memo.length; i++){
-        for(var j=0; j< arguments.length; j++){
-          if(memo[i] === arguments[j]){
-            has = true
-            index = i
-          }
-        }
+      var key = arguments[0] // An input given to the returned function.
+      if(memo[key]){
+        console.log(memo)
+          return memo[key]
+      } else {
+          memo[key] = func.apply(this, arguments)
+          return func.apply(this, arguments)
       }
+      
       // var key = hasher.apply(this, arguments);
-      return has ? null : (memo[memo.length] = func.apply(this, arguments));
+      // return has ? null : (memo[memo.length] = func.apply(this, arguments));
     };
   };
   // Delays a function for the given number of milliseconds, and then calls
